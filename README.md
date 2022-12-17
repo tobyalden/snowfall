@@ -1,0 +1,1 @@
+An empty template for [avoidance games](https://cohost.org/brlka/post/635982-2022-avoidance-game), written in HaxePunk. For information on getting set up, check [this blog post](https://brlka.com/posts/2022-06-08-getting-started-with-haxepunk).
