@@ -11,7 +11,7 @@ import scenes.*;
 
 class Player extends Entity
 {
-    public static inline var SPEED = 100;
+    public static inline var SPEED = 150;
 
     public var hasMoved(default, null):Bool;
     public var isDead(default, null):Bool;
@@ -26,7 +26,7 @@ class Player extends Entity
         sprite.x += width / 2;
         sprite.y += height / 2;
         graphic = sprite;
-        velocity = new Vector2();
+        velocity = new Vector2(SPEED, 0);
         hasMoved = false;
         isDead = false;
     }
@@ -49,29 +49,25 @@ class Player extends Entity
             return;
         }
 
-        var heading = new Vector2();
-        if(Input.check("left")) {
-            heading.x = -1;
-        }
-        else if(Input.check("right")) {
-            heading.x = 1;
-        }
-        else {
-            heading.x = 0;
-        }
         if(Input.check("up")) {
-            heading.y = -1;
+            velocity.y = -SPEED;
         }
         else if(Input.check("down")) {
-            heading.y = 1;
+            velocity.y = SPEED;
         }
         else {
-            heading.y = 0;
+            velocity.y = 0;
         }
-        velocity = heading;
-        velocity.normalize(SPEED);
 
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed);
+
+        if(x <= 0) {
+            velocity.x = SPEED;
+        }
+        else if(right >= GameScene.GAME_WIDTH) {
+            velocity.x = -SPEED;
+        }
+        y = MathUtil.clamp(y, 0, GameScene.GAME_HEIGHT - height);
 
         if(collide("hazard", x, y) != null) {
             die();

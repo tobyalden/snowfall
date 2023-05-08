@@ -15,6 +15,9 @@ import openfl.Assets;
 
 class GameScene extends Scene
 {
+    public static inline var GAME_WIDTH = 180;
+    public static inline var GAME_HEIGHT = 180;
+
     public static var totalTime:Float = 0;
     public static var highScore:Float;
 
@@ -27,6 +30,8 @@ class GameScene extends Scene
     private var colorChanger:ColorTween;
     private var canReset:Bool;
 
+    private var snowSpawner:Alarm;
+
     override public function begin() {
         Data.load(Main.SAVE_FILE_NAME);
         totalTime = 0;
@@ -38,8 +43,6 @@ class GameScene extends Scene
         addGraphic(new Image("graphics/background.png"));
 
         player = add(new Player(HXP.width / 2, HXP.height / 2));
-
-        add(new Hazard(HXP.width / 4, HXP.height / 4));
 
         scoreDisplay = new Text("0", 0, 0, 180, 0);
         scoreDisplay.alpha = 0;
@@ -60,6 +63,16 @@ class GameScene extends Scene
         addTween(colorChanger, true);
 
         canReset = false;
+        snowSpawner = new Alarm(1, function() {
+            for(i in 0...2) {
+                var snow = new Hazard(0, 0);
+                snow.x = (GAME_WIDTH - snow.width - 10) * Random.random + 5;
+                snow.y = -snow.height - GAME_HEIGHT * Random.random;
+                add(snow);
+            }
+        }, TweenType.Looping);
+        addTween(snowSpawner);
+
     }
 
     override public function update() {
@@ -94,6 +107,7 @@ class GameScene extends Scene
         for(display in [titleDisplay, tutorialDisplay]) {
             HXP.tween(display, {"alpha": 0}, 0.5);
         }
+        snowSpawner.start();
     }
 
     public function onDeath() {
@@ -122,6 +136,7 @@ class GameScene extends Scene
             Data.write("highscore", totalTime);
             Data.save(Main.SAVE_FILE_NAME);
         }
+        snowSpawner.active = false;
     }
 
     public function reset() {

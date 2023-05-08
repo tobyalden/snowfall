@@ -16,7 +16,7 @@ class Main extends Engine
     public static var sfx:Map<String, Sfx> = null;
 
     static function main() {
-        new Main();
+        new Main(180, 180);
     }
 
     override public function init() {
